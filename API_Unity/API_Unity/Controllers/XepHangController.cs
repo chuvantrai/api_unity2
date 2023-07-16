@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Unity.Controllers;
+
 [Route("[controller]/[action]")]
 [ApiController]
 public class XepHangController : Controller
@@ -12,13 +13,15 @@ public class XepHangController : Controller
     {
         _context = context;
     }
+
     [HttpGet]
     public IActionResult GetAll()
     {
-        return Ok(_context.XepHangs.OrderBy(x=>x.Score).Skip(0).Take(10));
+        return Ok(_context.XepHangs.OrderBy(x => x.Score).Skip(0).Take(10));
     }
+
     [HttpPost]
-    public IActionResult Add(string name,int score)
+    public IActionResult Add(string name, int score)
     {
         try
         {
@@ -28,6 +31,21 @@ public class XepHangController : Controller
                 Score = score
             };
             _context.XepHangs.Add(x);
+            _context.SaveChanges();
+            return Ok(1);
+        }
+        catch
+        {
+            return NotFound();
+        }
+    }
+    
+    [HttpPut]
+    public IActionResult Clear()
+    {
+        try
+        {
+            _context.XepHangs.RemoveRange(_context.XepHangs);
             _context.SaveChanges();
             return Ok(1);
         }
